@@ -25,7 +25,7 @@ import { GlyphAtlas } from "./GlyphAtlas";
 import { SdfGlyphAtlas } from "./SdfGlyphAtlas";
 import { Image } from "./Image";
 
-let P3D = {
+var P3D = {
 
 	WebGlRenderer: WebGlRenderer,
 	OrthoCamera: OrthoCamera,
@@ -74,12 +74,12 @@ let P3D = {
 
 		}
 
-		let g = new Geometry ( { context: _context } );
-		if ( _obj.positions.length > 0 ) g.addBufferAttribute ( new BufferAttribute ( { context: _context, name: 'position', data: new Float32Array ( _obj.positions ) } ) );
-		if ( _obj.uvs.length > 0 ) g.addBufferAttribute ( new BufferAttribute ( { context: _context, name: 'texCoord', data: new Float32Array ( _obj.uvs ) } ) );
-		if ( _obj.normals.length > 0 ) g.addBufferAttribute ( new BufferAttribute ( { context: _context, name: 'normal', data: new Float32Array ( _obj.normals ) } ) );
-		if ( _obj.indices.length > 0 ) g.addBufferAttribute ( new BufferAttribute ( { context: _context, name: 'index', data: new Uint16Array ( _obj.indices ) } ) );
-		let m = new Mesh ( { context: _context, geometry: g, material: null } );
+		let g = new this.Geometry ( { context: _context } );
+		if ( _obj.positions.length > 0 ) g.addBufferAttribute ( new this.BufferAttribute ( { context: _context, name: 'position', data: new Float32Array ( _obj.positions ) } ) );
+		if ( _obj.uvs.length > 0 ) g.addBufferAttribute ( new this.BufferAttribute ( { context: _context, name: 'texCoord', data: new Float32Array ( _obj.uvs ) } ) );
+		if ( _obj.normals.length > 0 ) g.addBufferAttribute ( new this.BufferAttribute ( { context: _context, name: 'normal', data: new Float32Array ( _obj.normals ) } ) );
+		if ( _obj.indices.length > 0 ) g.addBufferAttribute ( new this.BufferAttribute ( { context: _context, name: 'index', data: new Uint16Array ( _obj.indices ) } ) );
+		let m = new this.Mesh ( { context: _context, geometry: g, material: null } );
 		return m;
 
 	},
@@ -90,5 +90,7 @@ let P3D = {
 	SdfGlyphAtlas: SdfGlyphAtlas,
 
 }
+
+window.P3D = P3D;
 
 export { P3D };

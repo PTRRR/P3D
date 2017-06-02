@@ -8,7 +8,7 @@ var uglify = require( 'gulp-uglify' );
 var source = require( 'vinyl-source-stream' );
 var buffer = require( 'vinyl-buffer' );
 
-gulp.task( 'default', [ 'es6', 'es6-min' ], function(){} );
+gulp.task( 'default', [ 'es6' ], function(){} );
 
 gulp.task( 'es6', function(){
 

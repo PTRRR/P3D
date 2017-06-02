@@ -2390,12 +2390,12 @@ var P3D = {
 						return;
 				}
 
-				var g = new _Geometry.Geometry({ context: _context });
-				if (_obj.positions.length > 0) g.addBufferAttribute(new _BufferAttribute.BufferAttribute({ context: _context, name: 'position', data: new Float32Array(_obj.positions) }));
-				if (_obj.uvs.length > 0) g.addBufferAttribute(new _BufferAttribute.BufferAttribute({ context: _context, name: 'texCoord', data: new Float32Array(_obj.uvs) }));
-				if (_obj.normals.length > 0) g.addBufferAttribute(new _BufferAttribute.BufferAttribute({ context: _context, name: 'normal', data: new Float32Array(_obj.normals) }));
-				if (_obj.indices.length > 0) g.addBufferAttribute(new _BufferAttribute.BufferAttribute({ context: _context, name: 'index', data: new Uint16Array(_obj.indices) }));
-				var m = new _Mesh.Mesh({ context: _context, geometry: g, material: null });
+				var g = new this.Geometry({ context: _context });
+				if (_obj.positions.length > 0) g.addBufferAttribute(new this.BufferAttribute({ context: _context, name: 'position', data: new Float32Array(_obj.positions) }));
+				if (_obj.uvs.length > 0) g.addBufferAttribute(new this.BufferAttribute({ context: _context, name: 'texCoord', data: new Float32Array(_obj.uvs) }));
+				if (_obj.normals.length > 0) g.addBufferAttribute(new this.BufferAttribute({ context: _context, name: 'normal', data: new Float32Array(_obj.normals) }));
+				if (_obj.indices.length > 0) g.addBufferAttribute(new this.BufferAttribute({ context: _context, name: 'index', data: new Uint16Array(_obj.indices) }));
+				var m = new this.Mesh({ context: _context, geometry: g, material: null });
 				return m;
 		},
 		ObjParser: objParser,
@@ -2405,6 +2405,8 @@ var P3D = {
 		SdfGlyphAtlas: _SdfGlyphAtlas.SdfGlyphAtlas
 
 };
+
+window.P3D = P3D;
 
 exports.P3D = P3D;
 
