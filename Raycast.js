@@ -62,7 +62,7 @@ export class Raycast extends WebGlElement {
 
 	}
 
-	setFromCamera ( _mouse, _camera ) {
+	setFromCamera ( _camera, _mouse ) {
 
 		this._camera = _camera;
 
@@ -115,7 +115,7 @@ export class Raycast extends WebGlElement {
 
 	}
 
-	intersections ( _mesh, _numShapes ) {
+	intersections ( _options ) {
 
 		let cType = _mesh.colliderType;
 
@@ -197,6 +197,8 @@ export class Raycast extends WebGlElement {
 			break;
 
 			case 'BoundingSphere':
+
+
 
 			break;
 
@@ -291,6 +293,19 @@ export class Raycast extends WebGlElement {
 		planeIntersect ( out, this._origin, this._dir, _normal, _distance );
 
 		return vec3.fromValues ( out[ '0' ], out[ '1' ], out[ '2' ] );
+
+	}
+
+	getPointFromCamera ( _camera, _point, distance ) {
+
+		this.setFromCamera ( _camera, _point );
+		return this.planeIntersection ( vec3.fromValues ( 0, 0, -1 ), distance || 0 )
+
+	}
+
+	getPointinScreenSpace ( _point ) {
+
+		
 
 	}
 

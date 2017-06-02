@@ -160,7 +160,7 @@ export class WebGlRenderer {
 
 		if( this._canvas ){
 
-			let possibleContexts = [ 'webgl2', 'experimental-webgl2', 'webgl', 'experimental-webgl' ];
+			let possibleContexts = [ 'webgl', 'experimental-webgl' ];
 
 			for ( let i = 0; i < possibleContexts.length; i ++ ) {
 
@@ -176,6 +176,7 @@ export class WebGlRenderer {
 
 					this.setCustomGlFunctions();
 					console.log ( 'WebGlRenderer: ' + possibleContexts[ i ] + ' context created!' );
+					this.addExtentions ();
 					this.webglVersion = possibleContexts[ i ];
 					break;
 
@@ -202,6 +203,46 @@ export class WebGlRenderer {
 
 	}
 
+	addExtentions () {
+
+		console.log('* EXTENTIONS *');
+
+		let extentionsList = [ 'OES_vertex_array_object', 'OES_texture_float', 'OES_standard_derivatives' ];
+		let parametersList = [ 'MAX_VERTEX_TEXTURE_IMAGE_UNITS' ];
+
+		for ( let i = 0; i < extentionsList.length; i ++ ) {
+
+			let ext = this._context.getExtension ( extentionsList[ i ] );
+
+			if ( !ext ) {
+
+				console.error ( "WebGlRenderer ERROR: " + extentionsList[ i ] + " not supported!" );
+
+			} else {
+
+				this._context[ extentionsList[ i ] ] = ext;
+				console.log ( extentionsList[ i ] + ' enabled!' );
+
+			}
+
+		}
+
+		for ( let i = 0; i < parametersList.length; i ++ ) {
+
+			if ( this._context.getParameter ( this._context[ parametersList[ i ] ] ) == 0 ) {
+
+				console.warn ( "WebGlRenderer WARNING: " + parametersList[ i ] + " not supported!" );
+
+			} else {
+
+				console.log( parametersList[ i ] + " supported!" );
+
+			}
+
+		}
+
+	}
+
 	setCustomGlFunctions () {
 
 		if ( !this._context ) return;
@@ -209,6 +250,21 @@ export class WebGlRenderer {
 		this._context.renderer = this;
 		this._context.resolution = this._resolution;
 		this._context.realToCSSPixels = window.devicePixelRatio;
+
+	}
+
+	setViewport ( _x, _y, _width, _height ) {
+
+		this.viewport = {
+
+			x: _x,
+			y: _y,
+			width: _width,
+			height: _height,
+
+		}
+
+		this._context.viewport( _x, _y, _width, _height );
 
 	}
 

@@ -355,6 +355,7 @@ export function Circle ( _position, _radius, _subdivisions ) {
 	let vertices = [];
 	let indices = [];
 	let cIndices = [];
+	let normals = [];
 	let uvs = [];
 
 	let step = ( Math.PI * 2 ) / _subdivisions;
@@ -411,6 +412,8 @@ export function Circle ( _position, _radius, _subdivisions ) {
 	return {
 
 		vertices: vertices,
+		positions: vertices,
+		normals: normals,
 		indices: indices,
 		cIndices: cIndices,
 		uvs: uvs,

@@ -6,7 +6,6 @@ export class GlyphAtlas extends WebGlElement {
 	constructor ( _options ) {
 
 		super ( _options );
-
 		this._atlas = new Atlas ( _options );
 		this._textureContext = this._atlas.context;
 

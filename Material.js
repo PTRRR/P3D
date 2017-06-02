@@ -46,12 +46,18 @@ export class Material extends WebGlElement {
 		// Texture
 
 		this.texture = _options.texture;
+		this.multipleTextures = _options.multipleTextures || [];
+		this.rawTexture = _options.texture;
+		this.multipleRawTextures = _options.multipleRawTextures || [];
 
 		// Transparent
 		// Useful for forting geomatries at rendering.
 
 		this.transparent = _options.transparent || false;
 		this.depthTest = _options.depthTest || true;
+		this.enableBlending = true;
+		this.sourceBlendingMode = _options.sourceBlendingMode || this._context.SRC_ALPHA;
+		this.destinationBlendingMode = _options.destinationBlendingMode || this._context.ONE_MINUS_SRC_ALPHA;
 
 		this._zIndex = _options.zIndex || 0;
 
@@ -65,6 +71,10 @@ export class Material extends WebGlElement {
 			a: 1.0,
 
 		}
+
+		// Info to change
+
+		this.logWarn ( 'Diploma Hack: need to change multiple textures handling for further develeopement!' );
 
 	}
 
@@ -281,6 +291,7 @@ export class Material extends WebGlElement {
 
 	get ready () {
 
+
 		if ( !this._shaderProgram ) return false;
 		if ( this._imageUrl && !this._texture ) return false;
 
@@ -321,15 +332,25 @@ export class Material extends WebGlElement {
 		let vertexFooter = `\
 
 				outPosition = p_Matrix * mv_Matrix * vec4( outPosition.xyz, 1.0 );
-				gl_Position = outPosition;
 
+		`;
+
+		let vertexEnd = `\
+
+
+				gl_Position = outPosition;
 			}
+
+		`;
+
+		let fragmentExtensions = `\
 
 		`;
 
 		let fragmentHeader = `\
 
-			precision mediump float; \
+			precision mediump float;
+			uniform float time;
 
 		`;
 
@@ -350,10 +371,10 @@ export class Material extends WebGlElement {
 		`;
 
 		let vertexShader = new Shader ( { context: this._context, shaderType: this._context.VERTEX_SHADER } );
-		vertexShader.text = vertexHeader + _options.vertexHeader + vertexBody + _options.vertexBody + vertexFooter;
+		vertexShader.text = vertexHeader + _options.vertexHeader + vertexBody + _options.vertexBody + vertexFooter + ( _options.vertexEnd || '' ) + vertexEnd;
 
 		let fragmentShader = new Shader ( { context: this._context, shaderType: this._context.FRAGMENT_SHADER } );
-		fragmentShader.text = fragmentHeader + _options.fragmentHeader + fragmentBody + _options.fragmentBody + fragmentFooter;
+		fragmentShader.text = ( _options.fragmentExtensions || '' ) + fragmentHeader + _options.fragmentHeader + fragmentBody + _options.fragmentBody + fragmentFooter;
 
 		let shaderProgram = new ShaderProgram ( { context: this._context, vertexShader: vertexShader.shader, fragmentShader: fragmentShader.shader } );
 
@@ -363,16 +384,73 @@ export class Material extends WebGlElement {
 
 	bind () {
 
-		if ( this.texture ) {
+		//
+		// Hack for diploma need to change this.
+		//
 
-			this.texture.bind();
+		if ( this.multipleRawTextures.length > 0 ) {
+
+			for ( let i = this.multipleRawTextures.length - 1; i >= 0; i -- ) {
+
+				this._context.activeTexture( this._context.TEXTURE0 + i );
+				this._context.bindTexture ( this._context.TEXTURE_2D,  this.multipleRawTextures[ i ] );
+
+			}
+
+		}
+
+		if ( this.multipleTextures.length > 0 && this.multipleRawTextures.length == 0 ) {
+
+			for ( let i = 0; i < this.multipleTextures.length; i ++ ) {
+
+				this._context.activeTexture( this._context[ 'TEXTURE' + i ] );
+				this._context.bindTexture ( this._context.TEXTURE_2D, this.multipleTextures[ i ] );
+
+			}
+
+		}
+
+		if ( this.rawTexture && this.multipleTextures.length == 0 && this.multipleRawTextures.length == 0  ) {
+
+			this._context.activeTexture( this._context.TEXTURE0 );
+			this._context.bindTexture ( this._context.TEXTURE_2D, this.rawTexture );
+
+		}
+
+		if ( this.texture && !this.rawTexture && this.multipleTextures.length == 0 && this.multipleRawTextures.length == 0 ) {
+
 			this.texture.activeTexture ( this._context.TEXTURE0 );
+			this.texture.bind();
 
 		}
 
 		if ( this.shaderProgram ) {
 
 			this.shaderProgram.bind();
+
+		}
+
+	}
+
+	unbind () {
+
+		if ( this.texture && !this.rawTexture ) {
+
+			this.texture.unbind();
+			this.texture.activeTexture ( null );
+
+		}
+
+		if ( this.rawTexture ) {
+
+			this._context.activeTexture( null );
+			this._context.bindTexture ( this._context.TEXTURE_2D, null );
+
+		}
+
+		if ( this.shaderProgram ) {
+
+			this.shaderProgram.unbind();
 
 		}
 

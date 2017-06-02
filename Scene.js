@@ -66,7 +66,7 @@ export class Scene extends WebGlElement {
 
 			if ( _object.material.transparent ) {
 
-				// Sort objects by zIndex
+				// Sort objects by zIndex.
 
 				this._transparentObjects.push ( _object );
 
@@ -78,7 +78,7 @@ export class Scene extends WebGlElement {
 
 			} else {
 
-				// Sort objects by zIndex
+				// Sort objects by zIndex.
 
 				this._opaqueObjects.push ( _object );
 
@@ -103,15 +103,23 @@ export class Scene extends WebGlElement {
 
 		for ( let i = 0; i < this._opaqueObjects.length; i ++ ) {
 
-			this.renderObject ( this._opaqueObjects[ i ], _camera );
+			if ( this._opaqueObjects[ i ].active ) {
+				
+				this.renderObject ( this._opaqueObjects[ i ], _camera );
+					
+			}
 
 		}
 
-		// Then transparent ones
+		// Then transparent ones.
 
 		for ( let i = 0; i < this._transparentObjects.length; i ++ ) {
 
-			this.renderObject ( this._transparentObjects[ i ], _camera );
+			if ( this._transparentObjects[ i ].active ) {
+
+				this.renderObject ( this._transparentObjects[ i ], _camera );
+				
+			}
 
 		}
 
@@ -119,33 +127,58 @@ export class Scene extends WebGlElement {
 
 	renderObject ( _object, _camera ) {
 
+		// Check if a valid camera is passed as an argument.
+
 		if ( !_camera || _camera.type != 'Camera' ) {
 
 			throw 'Scene ERROR: You must pass a valid camera object as a parameter';
 			return;
 
-		} else {
-
-			// Update first the camera matrix ( view matrix ).
-
-			_camera.update();
-
-			mat4.identity ( this._mvMatrix );
-			mat4.multiply ( this._mvMatrix, this._mvMatrix, _camera.vMatrix );
-
 		}
+
+		//
+		// Check if the material attached to the mesh is ready for rendering ( shader loaded, texture loaded, etc... ).
+		// If not, do nothing.
+		//
 
 		if ( !_object.material.ready ) return;
 
-		_object.material.bind();
+		//
+		// Update first the camera matrix ( view matrix ).
+		//
+
+		_camera.update();
+
+		//
+		// Reset the model to view matrix.
+		//
 
 		mat4.identity ( this._mvMatrix );
-
 		mat4.multiply ( this._mvMatrix, this._mvMatrix, _camera.vMatrix );
 
 		this.pushMatrix();
 
+		//
+		// Update the model view matrix according to the object model matrix.
+		//
+
 		mat4.multiply ( this._mvMatrix, this._mvMatrix, _object.modelMatrix );
+
+		// If the mesh should look at something recompute the model view matrix.
+
+		if ( _object.lookAtPoint ) {
+
+			// mat4.lookAt( this._mvMatrix, vec3.create(), vec3.fromValues( 0, 0, 0 ), [0, 1, 0] );
+
+			// Reset look at point for the next frame.
+
+			_object.lookAtPoint = null;
+
+		}
+
+		// Bind the material to upload some uniforms.
+
+		_object.material.bind();
 
 		let mvMatrixUniformLocation = this._context.getUniformLocation ( _object.material.shaderProgram.program, 'mv_Matrix' );
 		this._context.uniformMatrix4fv ( mvMatrixUniformLocation, this._context.FALSE, this._mvMatrix );
@@ -217,14 +250,19 @@ export class Scene extends WebGlElement {
 
 		}
 
+		//
 		// Main uniforms present in all shaders.
+		//
+
 		let timsUniformLocation = this._context.getUniformLocation ( _object.material.shaderProgram.program, 'time' );
 		this._context.uniform1f ( timsUniformLocation, this._context.elapsedTime ); // Time
 
 		let resolutionUniformLocation = this._context.getUniformLocation ( _object.material.shaderProgram.program, 'resolution' );
 		this._context.uniform2fv ( resolutionUniformLocation, vec2.fromValues ( window.innerWidth, window.innerHeight ) ); // Resolution
 
+		//
 		// Check if the material enables the debth test.
+		//
 
 		if ( _object.material.depthTest ) {
 
@@ -236,14 +274,35 @@ export class Scene extends WebGlElement {
 
 		}
 
+		//
+		// Blending mode
+		//
+
+		if ( _object.material.enableBlending ) {
+
+			this._context.enable( this._context.BLEND );
+
+		} else {
+
+			this._context.disable( this._context.BLEND );
+
+		}
+
+		this._context.blendFunc( _object.material.sourceBlendingMode, _object.material.destinationBlendingMode );
+
+		//
 		// Check if there are vertices to render.
+		// If no vertices exists then don't draw.
+		//
 
 		if ( _object.geometry.bufferAttributes.position.data.length != 0 ) {
-
+			
 			_object.draw();
 
 		}
 	
+		// _object.material.unbind ();
+
 		this.popMatrix();
 
 	}

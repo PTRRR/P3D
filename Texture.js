@@ -6,10 +6,18 @@ export class Texture extends WebGlElement {
 
 		super ( _options );
 
+		this.filter = _options.filter || this._context.LINEAR;
+		this.format = _options.format || this._context.RGBA;
+		this.textureType = _options.type || this._context.UNSIGNED_BYTE;
+		this.minFilter = _options.minFilter || this._context.LINEAR;
+		this.maxFilter = _options.maxFilter || this._context.LINEAR;
+
+		// Hack
+		this.custom = _options.custom || false;
+		this.texture = _options.texture || null;
 		this.width = _options.width || null;
 		this.height = _options.height || null;
 		this.image = _options.image || null;
-		this.filter = _options.filter || this._context.LINEAR;
 
 	}
 
@@ -80,6 +88,12 @@ export class Texture extends WebGlElement {
 
 	}
 
+	set texture ( _texture ) {
+
+		this._texture = _texture;
+
+	}
+
 	get texture(){
 
 		return this._texture;
@@ -93,6 +107,10 @@ export class Texture extends WebGlElement {
 	}
 
 	createTexture( _image, _width, _height ){
+
+		// Hack need to change this.
+
+		if ( this.custom ) return;
 
 		// If a texture is already allocated just delete it.
 
@@ -109,11 +127,9 @@ export class Texture extends WebGlElement {
 		
 		this._context.texParameteri( this._context.TEXTURE_2D, this._context.TEXTURE_WRAP_S, this._context.CLAMP_TO_EDGE ); //U
 		this._context.texParameteri( this._context.TEXTURE_2D, this._context.TEXTURE_WRAP_T, this._context.CLAMP_TO_EDGE ); //V
-		
-		this._context.texParameteri( this._context.TEXTURE_2D, this._context.TEXTURE_MIN_FILTER, this._context.LINEAR );
-		this._context.texParameteri( this._context.TEXTURE_2D, this._context.TEXTURE_MAG_FILTER, this._context.LINEAR );
 
-		console.log(_image);
+		this._context.texParameteri( this._context.TEXTURE_2D, this._context.TEXTURE_MIN_FILTER, this.minFilter );
+		this._context.texParameteri( this._context.TEXTURE_2D, this._context.TEXTURE_MAG_FILTER, this.maxFilter );
 		
 		if ( _image ) {
 
@@ -141,6 +157,11 @@ export class Texture extends WebGlElement {
 			return;
 
 		}
+
+		// console.log('t');
+
+		// // this._context.boundTexture = this;
+		// this._context.bindTexture( this._context.TEXTURE_2D, this._texture );
 
 	}
 

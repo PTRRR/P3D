@@ -9,6 +9,7 @@ export class Transform extends WebGlElement {
 		this._position = vec3.create();
 		this._rotation = vec3.create();
 		this._scale = vec3.fromValues( 1, 1, 1 );
+		this._lookAtPoint = null;
 
 	}
 
@@ -47,5 +48,24 @@ export class Transform extends WebGlElement {
 		return this._scale;
 
 	}
+
+	lookAt ( _point ) {
+
+		this._lookAtPoint = _point;
+
+	}
+
+	set lookAtPoint ( _lookAtPoint ) {
+
+		this._lookAtPoint = _lookAtPoint;
+
+	}
+
+	get lookAtPoint () {
+
+		return this._lookAtPoint;
+
+	}
+
 
 }

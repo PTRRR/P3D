@@ -7,6 +7,12 @@ export class Text extends Mesh {
 
 		super ( _options );
 
+		this._type = 'Mesh';
+
+		this.rotation = _options.rotation || vec3.create();
+		this.position = _options.position || vec3.create();
+		this.scale = _options.scale || vec3.fromValues ( 1.0, 1.0, 1.0 );
+
 		// Initialize
 
 		let textInfoBufferAttribute = new P3D.BufferAttribute ( { 
@@ -33,10 +39,13 @@ export class Text extends Mesh {
 		this._debugGeometry = this.geometry.clone();
 		this._debugGeometry.bufferAttributes.index = new P3D.BufferAttribute ( { context: this._context, name: 'index', data: new Uint16Array ( [] ) } );
 		this._debugMesh = new P3D.Mesh ( { context: this._context, name: 'debugMesh', geometry: this._debugGeometry, material: new P3D.MaterialHelper( { context: this._context } ).blackLines() } );
+		this._debugMesh.position = this.position;
+		this._debugMesh.rotation = this.rotation;
+		this._debugMesh.scale = this.scale;
 
 		this._content = '';
-		this.color = _options.color || vec4.fromValues ( 1.0, 0.0, 0.0, 1.0 );
 		this.atlas = _options.atlas || null;
+		this.color = _options.color || vec4.fromValues ( 1.0, 0.0, 0.0, 1.0 );
 		this.lineHeight = _options.lineHeight || 1;
 		this.align = _options.align || 'left';
 		this.verticalAlign = _options.verticalAlign || 'top';

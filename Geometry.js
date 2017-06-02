@@ -8,6 +8,7 @@ export class Geometry extends WebGlElement {
 		super ( _options );
 
 		this._bufferAttributes = {};
+		this._vao = null;
 
 	}
 
@@ -71,6 +72,19 @@ export class Geometry extends WebGlElement {
 
 		}
 
+		// if ( !this._vao ) {
+
+		// 	this._vao = this._context.vao.createVertexArrayOES ();
+		// 	this._context.vao.bindVertexArrayOES ( this._vao );
+
+			
+
+		// } else {
+
+		// 	this._context.vao.bindVertexArrayOES ( this._vao );
+
+		// }
+
 		for ( let name in this._bufferAttributes ) {
 
 			if ( name != 'index' ) {
@@ -94,9 +108,9 @@ export class Geometry extends WebGlElement {
 
 		}
 
-		this._context.bindBuffer( this._context.ELEMENT_ARRAY_BUFFER, this._bufferAttributes[ 'index' ].buffer );
+		this._bufferAttributes[ 'index' ].buffer.bind ()
 		this._context.drawElements( _drawMode, _indicesLength, this._context.UNSIGNED_SHORT, _indicesOffset );
-		this._context.bindBuffer( this._context.ELEMENT_ARRAY_BUFFER, null );
+		this._bufferAttributes[ 'index' ].buffer.unbind ();
 
 	}
 

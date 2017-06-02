@@ -1,4 +1,5 @@
 import { WebGlElement } from "./WebGlElement";
+import { Buffer } from "./Buffer";
 
 export class BufferAttribute extends WebGlElement {
 
@@ -8,7 +9,7 @@ export class BufferAttribute extends WebGlElement {
 
 		this.name 				= _options.name;
 
-		this.buffer 			= _options.buffer;
+		this.buffer 			= _options.buffer || new Buffer( _options );
 		this.bufferType			= _options.bufferType;
 		this.usageParameter		= _options.usageParameter;
 
@@ -23,6 +24,7 @@ export class BufferAttribute extends WebGlElement {
 
 		// Set data
 
+		this.dataUpdated 		= false;
 		this.data 				= _options.data || null;
 
 	}
@@ -40,6 +42,13 @@ export class BufferAttribute extends WebGlElement {
 	}
 
 	set buffer ( _buffer ) {
+
+		if ( _buffer.type != 'Buffer' ) {
+
+			console.error('You must pass a valid buffer object!');
+			return;
+
+		}
 
 		this._buffer = _buffer;
 
@@ -151,6 +160,8 @@ export class BufferAttribute extends WebGlElement {
 
 		// Verify data & name
 
+		if ( _data == null ) return;
+
 		if ( !( _data instanceof Float32Array || _data instanceof Uint16Array ) ) {
 
 			console.error( this.constructor.name + ' ERROR: the data must be a Float32Array of Uint16Array! ' );
@@ -162,6 +173,8 @@ export class BufferAttribute extends WebGlElement {
 			return;
 
 		}
+
+		this.dataUpdated = true;
 
 		this._data = _data;
 
@@ -185,15 +198,9 @@ export class BufferAttribute extends WebGlElement {
 
 		// Create a buffer if needed, bind it and upload data to the GPU.
 
-		if ( !this._buffer ) {
-
-			this._buffer = this._context.createBuffer();
-
-		}
-
-		this._context.bindBuffer ( this._bufferType, this._buffer );
-		this._context.bufferData ( this._bufferType, this._data, this._usageParameter );
-		this._context.bindBuffer ( this._bufferType, null );
+		this.buffer.bind ();
+		this.buffer.setData ( this._data, this._usageParameter );
+		this.buffer.unbind ();
 
 	}
 
@@ -255,13 +262,13 @@ export class BufferAttribute extends WebGlElement {
 
 			case 'index':
 
-				defaultVariables.bufferType = this._context.ELEMENT_ARRAY_BUFFER;
+				this.buffer.bufferType = this._context.ELEMENT_ARRAY_BUFFER;
 
 			break;
 
 			default:
 
-				defaultVariables.bufferType = this._context.ARRAY_BUFFER;
+				this.buffer.bufferType = this._context.ARRAY_BUFFER;
 
 			break;
 
@@ -316,7 +323,7 @@ export class BufferAttribute extends WebGlElement {
 
 		}
 
-		this._context.bindBuffer( this._bufferType, this._buffer );
+		this.buffer.bind ();
 
 		this._context.enableVertexAttribArray( this._attributeLocation );
 
@@ -331,7 +338,7 @@ export class BufferAttribute extends WebGlElement {
 
 		);
 
-		this._context.bindBuffer( this._bufferType, null );
+		this.buffer.unbind ();
 
 	}
 

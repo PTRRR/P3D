@@ -27,6 +27,10 @@ export class WebGlElement {
 
 		this._id = guid();
 
+		// Active
+
+		this.active = _options.active || true;
+
 	}
 
 	set context ( _context ) {
@@ -62,6 +66,36 @@ export class WebGlElement {
 	get id () {
 
 		return this._id;
+
+	}
+
+	set active ( _active ) {
+
+		this._active = _active;
+
+	}
+
+	get active () {
+
+		return this._active;
+
+	}
+
+	log ( _string ) {
+
+		// console.log( this.constructor.name + ' LOG: ' + _string );
+
+	}
+
+	logError ( _string ) {
+
+		// console.error( this.constructor.name + ' ERROR: ' + _string );
+
+	}
+
+	logWarn ( _string ) {
+
+		// console.warn( this.constructor.name + ' WARNING: ' + _string );
 
 	}
 

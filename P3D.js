@@ -6,6 +6,7 @@ import { WebGlRenderer } from "./WebGlRenderer";
 import { OrthoCamera } from "./OrthoCamera";
 import { PerspectiveCamera } from "./PerspectiveCamera";
 import { Transform } from "./Transform";
+import { Buffer } from "./Buffer";
 import { BufferAttribute } from "./BufferAttribute";
 import { Geometry } from "./Geometry";
 import { Mesh } from "./Mesh";
@@ -22,6 +23,7 @@ import { MaterialHelper } from "./MaterialHelper";
 import { Text } from "./Text";
 import { GlyphAtlas } from "./GlyphAtlas";
 import { SdfGlyphAtlas } from "./SdfGlyphAtlas";
+import { Image } from "./Image";
 
 let P3D = {
 
@@ -30,10 +32,12 @@ let P3D = {
 	PerspectiveCamera: PerspectiveCamera,
 	Transform: Transform,
 	BufferAttribute: BufferAttribute,
+	Buffer: Buffer,
 	Geometry: Geometry,
 	Mesh: Mesh,
 	Axis: Axis,
 	Texture: Texture,
+	Image: Image,
 	Quad: Quad,
 	Cube: Cube,
 	Circle: Circle,

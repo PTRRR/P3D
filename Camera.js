@@ -99,14 +99,17 @@ export class Camera extends Transform {
 
 	}
 
-	project2dPoint ( _vec2 ) {
+	get2DPoint ( _point ) {
 
-		let point = vec3.fromValues ( _vec2[ 0 ], _vec2[ 1 ], 0.0 );
+		let viewProjectionMatrix = mat4.mul ( mat4.create(), this.pMatrix, this.vMatrix );
+		let p = vec3.transformMat4 ( vec3.create(), _point, viewProjectionMatrix );
 
-		vec3.transformMat4 ( point, point, this.pMatrix );
-		vec3.transformMat4 ( point, point, this.vMatrix );
+		let newPoint = vec2.create();
 
-		return point ;
+		newPoint[ 0 ] =  ( ( p[ 0 ] + 1 ) / 2 ) * this._context.renderer.realWidth;
+		newPoint[ 1 ] =  ( ( 1 - p[ 1 ] ) / 2 ) * this._context.renderer.realHeight;
+
+		return newPoint;
 
 	}
 

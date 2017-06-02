@@ -111,4 +111,15 @@ export class ShaderProgram extends WebGlElement {
 
 	}
 
+	unbind () {
+
+		if ( this._context.boundProgram != this._program ){
+
+			this._context.useProgram( null );
+			this._context.boundProgram = null;
+
+		}
+
+	}
+
 }
