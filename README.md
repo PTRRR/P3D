@@ -34,8 +34,8 @@ var scene = new P3D.Scene ( {
 var camera = new P3D.OrthoCamera( { 
   
   context: gl, 
-  width: renderer.realWidth, 
-  height: renderer.realHeight, 
+  width: webglRenderer.realWidth, // The real width is computed according to the width of the canvas and the CSS pixel ratio.
+  height: webglRenderer.realHeight, // The real height is computed according to the height of the canvas and the CSS pixel ratio.
   nearClipPlane: -400, 
   farClipPlane: 400 
   
