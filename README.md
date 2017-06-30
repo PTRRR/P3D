@@ -65,3 +65,14 @@ var bufferAttribute = new P3D.BufferAttribute ( {
 geometry.addBufferAttribute ( bufferAttribute );
 
 ```
+
+Materials can be built with P3D.Material. This doesn't use a shader generator, you'll have to create custom shaders to use this class.
+You can customize the MaterialHelper class to create your own materials. This class is located in src/js/MaterialHelper.js.
+The material class is not well implemented yet.....
+
+```javascript
+
+var materialHelper = new P3D.MaterialHelper ();
+var material = materialHelper.customMaterial ();
+
+```
