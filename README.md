@@ -76,3 +76,20 @@ var materialHelper = new P3D.MaterialHelper ();
 var material = materialHelper.customMaterial ();
 
 ```
+
+You can create meshes with P3D.Mesh.
+
+```javascript
+
+var mesh = new P3D.Mesh ( {
+
+  context: gl,
+  geometry: geometry,
+  material: material,
+  options...
+
+} );
+
+scene.add ( mesh );
+
+```
