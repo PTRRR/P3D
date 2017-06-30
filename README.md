@@ -27,7 +27,7 @@ var gl = webglRenderer.createContext ();
 var scene = new P3D.Scene ( { 
 
   context: gl, 
-  options.... 
+  options...
 
 } );
 
@@ -40,5 +40,28 @@ var camera = new P3D.OrthoCamera( {
   farClipPlane: 400 
   
 } );
+
+```
+
+Geometries can be built with P3D.Geometry.
+
+```javascript
+
+var geometry = new P3D.Geometry ( {
+  
+  context: gl,
+  options...
+
+} );
+
+var bufferAttribute = new P3D.BufferAttribute ( {
+
+  context: gl,
+  name: 'position', // position, texcoord, color, uv, normal
+  data: new Float32Array ( [ 1, 0, 0, 1, 1, 1 ] ),
+
+} );
+
+geometry.addBufferAttribute ( bufferAttribute );
 
 ```
