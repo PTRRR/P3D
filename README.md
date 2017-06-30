@@ -33,9 +33,9 @@ var scene = new P3D.Scene ( {
 
 var camera = new P3D.OrthoCamera( { 
   
-  context: this.gl, 
-  width: this.renderer.realWidth, 
-  height: this.renderer.realHeight, 
+  context: gl, 
+  width: renderer.realWidth, 
+  height: renderer.realHeight, 
   nearClipPlane: -400, 
   farClipPlane: 400 
   
