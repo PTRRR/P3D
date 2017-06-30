@@ -13,14 +13,10 @@ All objects requires to pass an object with the webgl context.
 
 ```javascript
 
-var webglRenderer = new P3D.WebglRenderer ();
-var gl = webglRenderer.getContext ();
+var webglRenderer = new P3D.WebglRenderer ( { canvas: _canvas, resolution: 0.5, width: window.innerWidth, height: window.innerHeight } );
+var gl = webglRenderer.createContext ();
 
-{
-
-  context: gl,
-  options....
-
-}
+var scene = new P3D.Scene ( { context: gl, options.... } );
+var camera = new P3D.OrthoCamera( { context: this.gl, width: this.renderer.realWidth, height: this.renderer.realHeight, nearClipPlane: -400, farClipPlane: 400 } );
 
 ´´´
