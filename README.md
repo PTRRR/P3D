@@ -92,4 +92,10 @@ var mesh = new P3D.Mesh ( {
 
 scene.add ( mesh );
 
+//
+// MAIN LOOP
+//
+
+scene.render ( camera );
+
 ```
